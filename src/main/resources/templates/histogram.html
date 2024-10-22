@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Гистограмма грузов</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        #cargoChart {
+            max-width: 1000px;
+            height: 500px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+<blockquote class="blockquote text-center"><h1>Гистограмма количества грузов по дате</h1></blockquote>
+<canvas id="cargoChart"></canvas>
+
+<script>
+    async function fetchCargoCount() {
+        try {
+            const response = await fetch('/histogram/data'); // Путь к API для данных
+            const cargoCount = await response.json();
+
+            console.log(cargoCount); // Проверка полученных данных
+
+            const labels = [];
+            const dataCount = [];
+
+            const today = new Date();
+            for (let i = 0; i < 14; i++) { // Диапазон 14 дней
+                const date = new Date(today);
+                date.setDate(today.getDate() + i);
+                const dateString = date.toISOString().split('T')[0]; // Получаем формат YYYY-MM-DD
+                labels.push(dateString);
+                dataCount.push(cargoCount[dateString] || 0); // Используем 0, если грузов не было в этот день
+            }
+
+            console.log("Labels:", labels); // Проверка меток
+            console.log("Data Count:", dataCount); // Проверка значений
+
+            const ctx = document.getElementById('cargoChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Количество грузов',
+                        data: dataCount, // Используем массив с данными
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        } catch (error) {
+            console.error('Ошибка при получении данных:', error);
+        }
+    }
+
+    fetchCargoCount(); // Запускаем функцию
+</script>
+</body>
+</html>
