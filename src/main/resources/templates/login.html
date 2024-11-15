@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Login</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+</head>
+<body>
+<h1>Login Page</h1>
+
+<!-- Отображение ошибки входа при необходимости -->
+<div th:if="${error}">
+    <p style="color:red;">Неправильный логин или пароль.</p>
+</div>
+
+<form method="POST" th:action="@{/login}">
+    <!-- Удаляем CSRF-токен -->
+    <div>
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+    </div>
+    <div>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+    </div>
+    <button type="submit">Login</button>
+</form>
+
+</body>
+</html>
