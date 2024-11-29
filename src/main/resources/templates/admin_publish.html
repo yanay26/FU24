@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org" lang="ru">
+<link rel="stylesheet" href="/css/style.css">
+<head>
+    <meta charset="UTF-8">
+    <title>Административная панель управления блогом</title>
+</head>
+<body>
+<div>
+    <h1>Административная панель управления блогом</h1>
+
+    <!-- Навигационные кнопки -->
+    <div style="text-align: center;">
+        <button class="btn-primary" onclick="location.href='/autoblog'">Автоблог</button>
+        <button class="btn-info" onclick="location.href='/'">Главная</button>
+    </div>
+
+    <!-- Поиск -->
+    <div style="text-align: center; margin-top: 20px;">
+        <h4>Поиск записи в блоге</h4>
+        <form th:action="@{/admin/publish}">
+            <input type="text" name="keyword" id="keyword" size="70" th:value="${keyword}" required />
+            <button class="btn-success" type="submit">Поиск</button>
+            <button class="btn-warning" type="button" onclick="clearSearch()">Очистить</button>
+        </form>
+    </div>
+
+    <!-- Таблица -->
+    <table class="table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Название</th>
+            <th>Дата</th>
+            <th>Текст</th>
+            <th>Автор</th>
+            <th>Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="blog: ${listBlog}">
+            <td th:text="${blog.id}"></td>
+            <td th:text="${blog.name}"></td>
+            <td th:text="${blog.date.toString().replace('T', ' ')}"></td>
+            <td th:text="${blog.text}"></td>
+            <td th:text="${blog.author != null ? blog.author.username : 'Неизвестный автор'}"></td>
+            <td>
+                <button class="btn-info" onclick="openEditModal(${blog.id})">Редактировать</button>
+                <button class="btn-danger" onclick="deleteBlog(${blog.id})">Удалить</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- Модальное окно -->
+    <div class="modal" id="editBlogModal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal()">×</button>
+            <div class="modal-header">
+                <h5>Редактировать запись</h5>
+            </div>
+            <div class="modal-body">
+                <form id="editBlogForm">
+                    <!-- Поля формы -->
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-primary" onclick="submitEditForm()">Сохранить</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function clearSearch() {
+        window.location.href = '/admin/publish';
+    }
+
+    function openEditModal(id) {
+        document.getElementById('editBlogModal').style.display = 'flex';
+        // Динамическое заполнение данных
+    }
+
+    function closeModal() {
+        document.getElementById('editBlogModal').style.display = 'none';
+    }
+
+    function deleteBlog(id) {
+        if (confirm('Вы уверены, что хотите удалить эту запись?')) {
+            fetch(`/admin/publish/delete`, { method: 'POST', body: JSON.stringify({ id }) })
+                .then(response => location.reload());
+        }
+    }
+</script>
+</body>
+</html>

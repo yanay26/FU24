@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Доставка грузов | Регистрация</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .form-group input:focus {
+            border-color: #4caf50;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+            outline: none;
+        }
+
+        .form-group input.invalid {
+            border-color: #f44336;
+            box-shadow: 0 0 5px rgba(244, 67, 54, 0.5);
+        }
+
+        .form-group .error-message {
+            color: red;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            display: block;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            text-align: center;
+            width: 100%;
+            margin-top: 10px;
+            border-radius: 5px;
+            box-sizing: border-box;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            transform: scale(1.05);
+        }
+
+        #message {
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+<h1>Регистрация</h1>
+<form id="registrationForm">
+    <div class="form-group">
+        <label for="usernameRegister">Ник пользователя:</label>
+        <input type="text" id="usernameRegister" name="username" placeholder="Введите ваш ник" required onkeyup="validateUsername();">
+        <div class="error-message" id="usernameError"></div>
+    </div>
+    <div class="form-group">
+        <label for="passwordRegister">Пароль:</label>
+        <input type="password" id="passwordRegister" name="password" onkeyup="check();" placeholder="Введите пароль" required>
+    </div>
+    <div class="form-group">
+        <label for="confirmPasswordRegister">Подтверждение пароля:</label>
+        <input type="password" id="confirmPasswordRegister" name="confirmPassword" onkeyup="check();" placeholder="Подтвердите пароль" required>
+        <span id="message"></span>
+    </div>
+    <div class="form-group">
+        <label for="emailRegister">Почта:</label>
+        <input type="email" id="emailRegister" name="email" placeholder="Введите вашу почту" required onkeyup="validateEmail();">
+        <div class="error-message" id="emailError"></div>
+    </div>
+    <button type="button" class="btn btn-primary" onclick="submitForm()">Зарегистрироваться</button>
+    <button type="button" class="btn btn-secondary" onclick="window.location.href='/login';">Назад ко входу</button>
+</form>
+
+
+    <script>
+        function check() {
+            const password = document.getElementById('passwordRegister').value;
+            const confirmPassword = document.getElementById('confirmPasswordRegister').value;
+            const message = document.getElementById('message');
+            const confirmInput = document.getElementById('confirmPasswordRegister');
+
+            if (password === confirmPassword && password !== "") {
+                message.style.color = 'green';
+                message.textContent = 'Пароли совпадают';
+                confirmInput.classList.remove('invalid');
+            } else {
+                message.style.color = 'red';
+                message.textContent = 'Пароли не совпадают';
+                confirmInput.classList.add('invalid');
+            }
+        }
+
+        function validateUsername() {
+            const username = document.getElementById('usernameRegister').value;
+            const usernameErrorElement = document.getElementById('usernameError');
+            const usernameInput = document.getElementById('usernameRegister');
+
+            if (username.length < 5) {
+                usernameErrorElement.textContent = 'Логин должен быть не менее 5 символов';
+                usernameInput.classList.add('invalid');
+            } else {
+                usernameErrorElement.textContent = '';
+                usernameInput.classList.remove('invalid');
+            }
+        }
+
+        function validateEmail() {
+            const email = document.getElementById('emailRegister').value;
+            const emailErrorElement = document.getElementById('emailError');
+            const emailInput = document.getElementById('emailRegister');
+
+            const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+            if (!emailPattern.test(email)) {
+                emailErrorElement.textContent = 'Введите корректный email';
+                emailInput.classList.add('invalid');
+            } else {
+                emailErrorElement.textContent = '';
+                emailInput.classList.remove('invalid');
+            }
+        }
+
+        function validateForm() {
+            const username = document.getElementById('usernameRegister').value;
+            const email = document.getElementById('emailRegister').value;
+            let valid = true;
+
+            const usernameErrorElement = document.getElementById('usernameError');
+            const usernameInput = document.getElementById('usernameRegister');
+            if (username.length < 5) {
+                usernameErrorElement.textContent = 'Логин должен быть не менее 5 символов';
+                usernameInput.classList.add('invalid');
+                valid = false;
+            } else {
+                usernameErrorElement.textContent = '';
+                usernameInput.classList.remove('invalid');
+            }
+
+            const emailErrorElement = document.getElementById('emailError');
+            const emailInput = document.getElementById('emailRegister');
+            const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+            if (!emailPattern.test(email)) {
+                emailErrorElement.textContent = 'Введите корректный email';
+                emailInput.classList.add('invalid');
+                valid = false;
+            } else {
+                emailErrorElement.textContent = '';
+                emailInput.classList.remove('invalid');
+            }
+
+            return valid;
+        }
+
+        function submitForm() {
+            if (!validateForm()) {
+                return;
+            }
+
+            const formData = new FormData(document.getElementById('registrationForm'));
+
+            fetch('/api/auth/register', {
+                method: 'POST',
+                body: formData,
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Регистрация успешна!');
+                        window.location.href = '/login'; // Перенаправляем на страницу входа
+                    } else {
+                        alert('Ошибка регистрации: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Ошибка:', error);
+                    alert('Произошла ошибка при отправке данных.');
+                });
+        }
+    </script>
+</body>
+</html>

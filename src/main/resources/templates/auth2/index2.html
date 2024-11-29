@@ -1,0 +1,33 @@
+<!DOCTYPE HTML>
+<html lang="ru" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Главная</title>
+    <link rel="stylesheet" href="${{#httpServletRequest.contextPath}}/resources/css/style.css">
+</head>
+<body>
+<div>
+    <!-- Отображение имени пользователя -->
+    <h3 th:text="${#authentication.name}"></h3>
+
+    <!-- Ссылки для неаутентифицированных пользователей -->
+    <div sec:authorize="!isAuthenticated()">
+        <h4><a th:href="@{/login}">Войти</a></h4>
+        <h4><a th:href="@{/registration}">Зарегистрироваться</a></h4>
+    </div>
+
+    <!-- Ссылки для аутентифицированных пользователей -->
+    <div sec:authorize="isAuthenticated()">
+        <h4><a th:href="@{/logout}">Выйти</a></h4>
+    </div>
+
+    <!-- Ссылки для всех пользователей -->
+    <h4><a th:href="@{/news}">Новости (только пользователь)</a></h4>
+
+    <!-- Ссылка для администраторов -->
+    <div sec:authorize="hasRole('ROLE_ADMIN')">
+        <h4><a th:href="@{/admin}">Пользователи (только админ)</a></h4>
+    </div>
+</div>
+</body>
+</html>

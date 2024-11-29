@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Автоблог</title>
+    <link integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/style.css"> <!-- Подключаем твой CSS файл -->
+</head>
+<style>
+    /* Общие стили для блога */
+    .blog-list {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 20px;
+    }
+
+    .blog-item {
+        background-color: #f9f9f9;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 800px;
+        margin: 10px 0;
+        padding: 20px;
+        transform: translateY(30px);
+        opacity: 0;
+        animation: slideUp 0.5s ease-out forwards;
+    }
+
+    .blog-item:nth-child(even) {
+        animation-delay: 0.1s;
+    }
+
+    .blog-item:nth-child(odd) {
+        animation-delay: 0.3s;
+    }
+
+    .blog-header h3 {
+        font-size: 1.5rem;
+        color: #333;
+        font-weight: bold;
+    }
+
+    .blog-header h4 {
+        font-size: 1.2rem;
+        color: #555;
+    }
+
+    .blog-header h5 {
+        font-size: 1rem;
+        color: #777;
+        font-style: italic;
+        margin-bottom: 15px;
+    }
+
+    .blog-content p {
+        font-size: 1.1rem;
+        color: #333;
+        line-height: 1.5;
+    }
+
+    /* Анимация для блога */
+    @keyframes slideUp {
+        from {
+            transform: translateY(30px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    /* Для кнопок и ссылок */
+    .btn {
+        margin-top: 10px;
+    }
+</style>
+<body>
+    <blockquote class="blockquote text-center">
+        <h1 class="custom-heading">Блог об автомобилях</h1>
+    </blockquote>
+    <blockquote class="blockquote text-center">
+        <a href="/admin/publish" style="text-decoration: none;">
+            <button type="button" class="btn btn-primary">Административная панель управления блогом</button>
+        </a>
+        <a href="/" style="text-decoration: none;">
+            <button type="button" class="btn btn-info">Главная</button>
+        </a>
+    </blockquote>
+
+    <form th:action="@{/autoblog}" method="get" class="search-form mb-3">
+        <div class="input-group custom-input-group">
+            <input type="text" class="form-control" name="name" placeholder="Поиск по названию" th:value="${name}">
+            <input type="text" class="form-control" name="text" placeholder="Поиск по тексту" th:value="${text}">
+            <input type="datetime-local" class="form-control" name="date" placeholder="Поиск по дате" th:value="${date}">
+            <input type="submit" class="btn btn-success btn-sm" value="Поиск"/>
+            <input type="button" class="btn btn-warning btn-sm" value="Очистить" id="btnClear" onclick="clearSearch()"/>
+        </div>
+    </form>
+
+    <div class="blog-list">
+        <div th:each="blog: ${listBlog}" class="blog-item">
+            <div class="blog-header">
+                <h3 class="text-black" th:text="${blog.name}"></h3>
+                <h4 class="text-black" th:text="${blog.author != null ? blog.author.username : 'Неизвестный автор'}"></h4>
+                <h5 class="text-black" th:text="${#temporals.format(blog.date, 'dd.MM.yyyy HH:mm')}"></h5>
+            </div>
+            <div class="blog-content">
+                <p th:text="${blog.text}"></p>
+            </div>
+        </div>
+    </div>
+
+
+
+<script type="text/javascript">
+    function clearSearch() {
+        window.location="[[@{/autoblog}]]";
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>Вход в систему</title>
+</head>
+
+<body>
+<!-- Если пользователь уже авторизован, перенаправляем его на главную страницу -->
+<div th:if="${#authentication.principal != null}">
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        window.location = "/";
+        /*]]>*/
+    </script>
+</div>
+
+<div>
+    <!-- Форма для входа -->
+    <form th:action="@{/login}" method="POST">
+        <h2>Вход в систему</h2>
+        <div>
+            <input name="username" type="text" placeholder="Username" autofocus="true" />
+        </div>
+        <div>
+            <input name="password" type="password" placeholder="Password" />
+        </div>
+        <div>
+            <button type="submit">Log In</button>
+        </div>
+        <h4><a th:href="@{/registration}">Зарегистрироваться</a></h4>
+    </form>
+</div>
+
+</body>
+</html>

@@ -31,6 +31,9 @@ form {
 
 input[type="text"],
 input[type="date"],
+input[type="password"],
+input[type="email"],
+input[type="datetime-local"],
 button {
     padding: 10px;
     margin: 5px 0;
@@ -38,6 +41,7 @@ button {
     border: 1px solid #ddd;
     width: 100%;
     box-sizing: border-box;
+    box-sizing: border-box; /* Учитывает паддинги и бордеры в ширине */
 }
 
 button {

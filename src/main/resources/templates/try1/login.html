@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Login</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Подключаем jQuery -->
+</head>
+<body>
+<h1>Login Page</h1>
+
+<!-- Отображение ошибки входа при необходимости -->
+<div id="error-message" style="color:red; display:none;">Неправильный логин или пароль.</div>
+
+<div>
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required>
+</div>
+<div>
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required>
+</div>
+<button id="login-button">Login</button>
+
+<script>
+    $(document).ready(function() {
+        $('#login-button').click(function(event) {
+            event.preventDefault(); // Предотвращаем перезагрузку страницы
+
+            // Получаем значения полей ввода
+            var username = $('#username').val();
+            var password = $('#password').val();
+
+            // Выполняем AJAX-запрос
+            $.ajax({
+                url: '/api/userservice/login', // Отправляем запрос на новый URL
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    username: username,
+                    password: password
+                }),
+                success: function(data) {
+                    // Обработка успешного входа
+                    window.location.href = '/cargo/main'; // Перенаправить на основную страницу
+                },
+                error: function(xhr, status, error) {
+                    // Обработка ошибки входа
+                    $('#error-message').show(); // Показать сообщение об ошибке
+                }
+            });
+        });
+    });
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Административная панель</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<div class="main-container">
+    <header class="header">
+        <h1>Панель управления пользователями</h1>
+        <a th:href="@{'/'}" class="btn btn-info">Вернуться на главную</a>
+    </header>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Пользователь</th>
+            <th>Почта</th>
+            <th>Роль</th>
+            <th>Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user: ${listUsers}">
+            <td th:text="${user.id}">ID</td>
+            <td th:text="${user.username}">Пользователь</td>
+            <td th:text="${user.email}">Почта</td>
+            <td>
+                <span th:each="role : ${user.roles}" th:text="${role.name} + ' '"></span>
+            </td>
+            <td>
+                <form th:if="${user.hasRole('ROLE_USER')}" th:action="@{'/padmin/update_user/' + ${user.id}}" method="post">
+                    <button type="submit" class="btn btn-info">Сделать администратором</button>
+                </form>
+                <form th:if="${user.hasRole('ROLE_ADMIN')}" th:action="@{'/padmin/update_admin/' + ${user.id}}" method="post">
+                    <button type="submit" class="btn btn-info">Сделать пользователем</button>
+                </form>
+                <button type="button" class="btn btn-danger" th:onclick="'deleteUser(' + ${user.id} + ')'">Удалить</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Модальное окно подтверждения -->
+<div class="modal" id="deleteConfirmationModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5>Подтверждение удаления</h5>
+            <button class="close-modal" onclick="closeModal()">×</button>
+        </div>
+        <div class="modal-body">
+            Вы уверены, что хотите удалить этого пользователя?
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal()">Отмена</button>
+            <button class="btn btn-danger" id="confirmDeleteButton">Удалить</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentDeleteId = null;
+
+    function deleteUser(id) {
+        currentDeleteId = id;
+        document.getElementById('deleteConfirmationModal').style.display = 'block';
+    }
+
+    function closeModal() {
+        document.getElementById('deleteConfirmationModal').style.display = 'none';
+    }
+
+    document.getElementById('confirmDeleteButton').addEventListener('click', function () {
+        if (currentDeleteId) {
+            var formData = new FormData();
+            formData.append('id', currentDeleteId);
+            fetch('/padmin/delete', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.text())
+                .then(data => {
+                    alert(data); // Вывод сообщения об успехе
+                    location.reload(); // Обновление страницы
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    });
+</script>
+
+</body>
+</html>

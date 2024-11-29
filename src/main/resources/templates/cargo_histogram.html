@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org" lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Доставка грузов</title>
+  <link rel="stylesheet" href="/css/style.css"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body style="margin: 0;">
+<div class="bg-image" style="background: #b4be89; height: 100vh; overflow: auto">
+  <blockquote class="blockquote text-center"><h1>Доставка грузов</h1></blockquote>
+  <blockquote class="blockquote text-center"><h4>Количество грузов в день</h4></blockquote>
+  <table id="transfersTable" class="table table-striped table-hover">
+    <thead>
+    <tr>
+      <th>Дата</th>
+      <th>Количество грузов</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
+  </table>
+  <canvas id="transfersChart" width="400" height="200"></canvas>
+  <script th:inline="javascript">
+    const listTransfers = /*[[${listTransfers}]]*/ [];
+
+    function groupTransfersByDate(transfers) {
+      const dateMap = {};
+
+      transfers.forEach(transfer => {
+        const dateKey = new Date(transfer.datefrom).toISOString().split('T')[0];
+        if (dateMap[dateKey]) {
+          dateMap[dateKey] += 1;
+        } else {
+          dateMap[dateKey] = 1;
+        }
+      });
+
+      return dateMap;
+    }
+
+    const groupedTransfers = groupTransfersByDate(listTransfers);
+
+    const labels = Object.keys(groupedTransfers);
+    const data = Object.values(groupedTransfers);
+
+    const ctx = document.getElementById('transfersChart').getContext('2d');
+    const transfersChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Количество грузов',
+          data: data,
+          backgroundColor: 'rgb(0,42,255)',
+          borderColor: 'rgb(0,42,255)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          x:{
+            ticks:{
+              color: 'black'
+            }
+          },
+          y: {
+            ticks:{
+              color: 'black'
+            },
+            beginAtZero: true
+          }
+        }
+      }
+    });
+    function populateTable(groupedTransfers) {
+      const tableBody = document.querySelector("#transfersTable tbody");
+      Object.entries(groupedTransfers).forEach(([date, count]) => {
+        const row = document.createElement("tr");
+
+        const dateCell = document.createElement("td");
+        dateCell.textContent = date;
+
+        const countCell = document.createElement("td");
+        countCell.textContent = count;
+
+        row.appendChild(dateCell);
+        row.appendChild(countCell);
+
+        tableBody.appendChild(row);
+      });
+    }
+
+    populateTable(groupedTransfers);
+  </script>
+</div>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Административная панель</title>
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <h1>Добро пожаловать в административную панель</h1>
+
+    <!-- Кнопки для навигации -->
+    <div class="btn-group" role="group" aria-label="Admin Actions">
+
+
+        <!-- Кнопка для управления пользователями -->
+        <button class="btn btn-info" onclick="window.location.href='/admin/users'">Управление пользователями</button>
+
+        <!-- Кнопка для администрирования блога -->
+        <button class="btn btn-success" onclick="window.location.href='/admin/publish'">Администрирование блогов</button>
+
+        <!-- Кнопка на предыдущую страницу -->
+        <button class="btn btn-primary" onclick="history.back()">Назад</button>
+    </div>
+</div>
+</body>
+</html>
